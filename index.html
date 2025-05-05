@@ -1,56 +1,47 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>SUPPLIER INVENTORY</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: #101820;
-      color: #fff;
-      margin: 0;
-      padding: 20px;
+      background-color: #f4f6f9;
+      color: #333;
+      padding: 30px;
     }
-
     h1 {
-      color: #00ffff;
-      font-size: 2em;
+      text-align: center;
+      font-size: 2.5rem;
+      color: #111;
     }
-
     select, input, button {
-      padding: 10px;
-      margin: 8px 0;
-      border-radius: 5px;
-      border: none;
-      font-size: 1em;
-    }
-
-    select, input {
-      width: 100%;
-      max-width: 400px;
-    }
-
-    button {
-      background-color: #00cc99;
-      color: #fff;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #009977;
-    }
-
-    .section {
-      margin-bottom: 30px;
-    }
-
-    label {
       display: block;
-      margin-top: 10px;
+      margin: 10px auto;
+      padding: 10px;
+      font-size: 1rem;
+      width: 300px;
     }
-
-    .button-group {
+    .container {
+      text-align: center;
       margin-top: 20px;
+    }
+    .tab {
+      display: none;
+    }
+    .tab.active {
+      display: block;
+    }
+    .btn {
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .btn-green { background-color: #28a745; color: white; }
+    .btn-red { background-color: #dc3545; color: white; }
+    .btn-orange { background-color: #fd7e14; color: white; }
+    .tab-selector {
+      margin: 20px;
     }
   </style>
 </head>
@@ -58,82 +49,93 @@
 
   <h1>SUPPLIER INVENTORY</h1>
 
-  <div class="section">
-    <label for="proveedor">Seleccionar Proveedor:</label>
+  <div class="container">
+    <label for="proveedor">Seleccionar Proveedor</label>
     <select id="proveedor">
       <option value="">-- Selecciona --</option>
-      <option value="BRAZEWAY">46882 BRAZEWAY MEXICO S DE R L DE CV</option>
-      <option value="COLLIS">64955 COLLIS DE MEXICO LLC</option>
-      <option value="ENGINEERED">67764 ENGINEERED PLASTIC COMPONENTS INC</option>
-      <option value="TROQUELADAS">46849 ESPECIALIDADES TROQUELADAS SA DE CV</option>
-      <option value="GEMTRON">46541 GEMTRON DE MEXICO SA DE CV</option>
-      <option value="GLASSER">49329 GLASSER SA DE CV</option>
-      <option value="HUNTINGTON">38902 HUNTINGTON FOAM LLC</option>
-      <option value="INDUSTRIAL">33343 INDUSTRIAL DIELECTRICS INC</option>
-      <option value="ISE">83228 ISE METAL INC</option>
-      <option value="JONES">47100 JONES PLASTIC & ENGINEERING DE</option>
-      <option value="MANUFACTURAS">46550 MANUFACTURAS Y SERVICIOS TROQUELADO</option>
-      <option value="MARCEGAGLIA">71580 MARCEGAGLIA MEXICO, S DE RL DE CV</option>
-      <option value="OLSON">83016 OLSON METAL PRODUCTS, LLC</option>
-      <option value="PLASTIEXPORTS">53040 PLASTIEXPORTS SA DE CV</option>
-      <option value="POLIESTIRENO">48567 POLIESTIRENO ALFA GAMMA S A DE C V</option>
-      <option value="REHAU">47135 REHAU SA DE CV</option>
-      <option value="SP">51737 SP MANUFACTURAS S DE RL DE CV</option>
-      <option value="STARION">71724 STARION MONTERREY MEXICO S A DE C</option>
-      <option value="TAE">65749 TAE SUNG MEXICO S A DE C V</option>
-      <option value="UNICAR">47796 UNICAR PLASTICS SA DE CV</option>
-      <option value="WHIRLPOOL">ML24 WHIRLPOOL OVERSEAS MANUFACTURING S.</option>
-      <option value="WOLVERINE">9028 WOLVERINE METAL STAMPING</option>
+      <option value="46882">BRAZEWAY MEXICO S DE R L DE CV</option>
+      <option value="64955">COLLIS DE MEXICO LLC</option>
+      <option value="67764">ENGINEERED PLASTIC COMPONENTS INC</option>
+      <!-- Agrega los demás proveedores aquí -->
+      <option value="9028">WOLVERINE METAL STAMPING</option>
     </select>
 
-    <label for="fecha">Fecha y Hora:</label>
-    <input type="datetime-local" id="fecha">
-
-    <label for="contenedor">Seleccionar Contenedor:</label>
-    <input type="text" id="contenedor" placeholder="Contenedor según catálogo">
-
-    <label for="cantidad">Cantidad en planta:</label>
-    <input type="number" id="cantidad" placeholder="Cantidad actual">
-
-    <div class="button-group">
-      <button onclick="enviarInventario()">ENVIAR INVENTARIO</button>
+    <div class="tab-selector">
+      <button onclick="showTab('rvp')">INV RVP</button>
+      <button onclick="showTab('pt')">INV PT</button>
     </div>
+
+    <div id="rvp" class="tab">
+      <input type="datetime-local" id="fecha_rvp">
+      <input type="text" id="contenedor_rvp" placeholder="Seleccionar Contenedor">
+      <input type="number" id="cantidad_rvp" placeholder="Cantidad en Planta">
+      <button class="btn btn-green" onclick="enviarDatos('RVP')">ENVIAR INVENTARIO</button>
+      <button class="btn btn-red" onclick="limpiar('rvp')">LIMPIAR DATOS</button>
+      <button class="btn btn-orange" onclick="verHistorial()">HISTORIAL DE INV</button>
+    </div>
+
+    <div id="pt" class="tab">
+      <input type="datetime-local" id="fecha_pt">
+      <input type="text" id="contenedor_pt" placeholder="Seleccionar Contenedor">
+      <input type="text" id="parte_pt" placeholder="Número de Parte de Pieza">
+      <input type="number" id="pack_pt" placeholder="Estandar Pack">
+      <input type="number" id="cantidad_pt" placeholder="Cantidad en Planta">
+      <button class="btn btn-green" onclick="enviarDatos('PT')">ENVIAR INVENTARIO</button>
+      <button class="btn btn-red" onclick="limpiar('pt')">LIMPIAR DATOS</button>
+      <button class="btn btn-orange" onclick="verHistorial()">HISTORIAL DE INV</button>
+    </div>
+
+    <br>
+    <button class="btn btn-green" onclick="exportarASheet()">EXPORTAR A SHEET</button>
   </div>
 
   <script>
-    function enviarInventario() {
-      const proveedor = document.getElementById("proveedor").value;
-      const fecha = document.getElementById("fecha").value;
-      const contenedor = document.getElementById("contenedor").value;
-      const cantidad = document.getElementById("cantidad").value;
+    function showTab(tab) {
+      document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+      document.getElementById(tab).classList.add('active');
+    }
 
-      if (!proveedor || !fecha || !contenedor || !cantidad) {
-        alert("Por favor llena todos los campos.");
+    function limpiar(tab) {
+      document.querySelectorAll(`#${tab} input`).forEach(el => el.value = "");
+    }
+
+    function enviarDatos(tipo) {
+      const proveedor = document.getElementById("proveedor").value;
+      if (!proveedor) {
+        alert("Selecciona un proveedor.");
         return;
       }
 
       const datos = {
-        proveedor,
-        fecha,
-        contenedor,
-        cantidad
+        tipo: tipo,
+        proveedor: proveedor,
+        fecha: document.getElementById(`fecha_${tipo.toLowerCase()}`).value,
+        contenedor: document.getElementById(`contenedor_${tipo.toLowerCase()}`).value,
+        cantidad: document.getElementById(`cantidad_${tipo.toLowerCase()}`).value
       };
 
-      fetch("https://script.google.com/a/macros/whirlpool.com/s/AKfycbywO-vQOXZfCmD1ykPKDHp-w72Olk-KQtaS5ydGxS74tA_F1zP5ikq7Bx0x_7U1JTy7/exec", {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-          "Content-Type": "application/json"
-        },
+      if (tipo === "PT") {
+        datos.parte = document.getElementById("parte_pt").value;
+        datos.pack = document.getElementById("pack_pt").value;
+      }
+
+      fetch('https://script.google.com/macros/s/AKfycbzX.../exec', {
+        method: 'POST',
+        mode: 'no-cors',
         body: JSON.stringify(datos)
       });
 
-      alert("Inventario enviado correctamente.");
-      document.getElementById("fecha").value = "";
-      document.getElementById("contenedor").value = "";
-      document.getElementById("cantidad").value = "";
+      alert("Datos enviados");
+    }
+
+    function verHistorial() {
+      window.open("https://docs.google.com/spreadsheets/d/1M0Xbu5ACkNK8rJRX-DMJDoq_LYmFJQaX-6Qti2e7mWs", '_blank');
+    }
+
+    function exportarASheet() {
+      window.open("https://docs.google.com/spreadsheets/create", '_blank');
     }
   </script>
+
 </body>
 </html>
-
