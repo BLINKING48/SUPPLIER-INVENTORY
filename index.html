@@ -1,137 +1,102 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>SUPPLIER INVENTORY</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: #101820;
+      background: #1a1a1a;
       color: #fff;
-      margin: 0;
       padding: 20px;
     }
-
     h1 {
-      color: #00ffff;
+      text-align: center;
       font-size: 2em;
     }
-
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #2a2a2a;
+      padding: 20px;
+      border-radius: 10px;
+    }
     select, input, button {
-      padding: 10px;
-      margin: 8px 0;
-      border-radius: 5px;
-      border: none;
-      font-size: 1em;
-    }
-
-    select, input {
       width: 100%;
-      max-width: 400px;
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
     }
-
     button {
-      background-color: #00cc99;
-      color: #fff;
+      background-color: #00b894;
+      color: white;
+      font-weight: bold;
       cursor: pointer;
     }
-
     button:hover {
-      background-color: #009977;
-    }
-
-    .section {
-      margin-bottom: 30px;
-    }
-
-    label {
-      display: block;
-      margin-top: 10px;
-    }
-
-    .button-group {
-      margin-top: 20px;
+      background-color: #00cec9;
     }
   </style>
 </head>
 <body>
-
   <h1>SUPPLIER INVENTORY</h1>
-
-  <div class="section">
-    <label for="proveedor">Seleccionar Proveedor:</label>
+  <div class="container">
+    <label for="proveedor">Seleccionar proveedor:</label>
     <select id="proveedor">
-      <option value="">-- Selecciona --</option>
+      <option value="">--Seleccionar--</option>
       <option value="BRAZEWAY">46882 BRAZEWAY MEXICO S DE R L DE CV</option>
       <option value="COLLIS">64955 COLLIS DE MEXICO LLC</option>
       <option value="ENGINEERED">67764 ENGINEERED PLASTIC COMPONENTS INC</option>
-      <option value="TROQUELADAS">46849 ESPECIALIDADES TROQUELADAS SA DE CV</option>
-      <option value="GEMTRON">46541 GEMTRON DE MEXICO SA DE CV</option>
-      <option value="GLASSER">49329 GLASSER SA DE CV</option>
-      <option value="HUNTINGTON">38902 HUNTINGTON FOAM LLC</option>
-      <option value="INDUSTRIAL">33343 INDUSTRIAL DIELECTRICS INC</option>
-      <option value="ISE">83228 ISE METAL INC</option>
-      <option value="JONES">47100 JONES PLASTIC & ENGINEERING DE</option>
-      <option value="MANUFACTURAS">46550 MANUFACTURAS Y SERVICIOS TROQUELADO</option>
-      <option value="MARCEGAGLIA">71580 MARCEGAGLIA MEXICO, S DE RL DE CV</option>
-      <option value="OLSON">83016 OLSON METAL PRODUCTS, LLC</option>
-      <option value="PLASTIEXPORTS">53040 PLASTIEXPORTS SA DE CV</option>
-      <option value="POLIESTIRENO">48567 POLIESTIRENO ALFA GAMMA S A DE C V</option>
-      <option value="REHAU">47135 REHAU SA DE CV</option>
-      <option value="SP">51737 SP MANUFACTURAS S DE RL DE CV</option>
-      <option value="STARION">71724 STARION MONTERREY MEXICO S A DE C</option>
-      <option value="TAE">65749 TAE SUNG MEXICO S A DE C V</option>
-      <option value="UNICAR">47796 UNICAR PLASTICS SA DE CV</option>
-      <option value="WHIRLPOOL">ML24 WHIRLPOOL OVERSEAS MANUFACTURING S.</option>
-      <option value="WOLVERINE">9028 WOLVERINE METAL STAMPING</option>
+      <!-- Agrega los demás proveedores aquí con sus nombres de hoja como value -->
     </select>
 
-    <label for="fecha">Fecha y Hora:</label>
-    <input type="datetime-local" id="fecha">
-
-    <label for="contenedor">Seleccionar Contenedor:</label>
-    <input type="text" id="contenedor" placeholder="Contenedor según catálogo">
+    <label for="contenedor">Contenedor:</label>
+    <input type="text" id="contenedor" placeholder="Ej. TOTE123">
 
     <label for="cantidad">Cantidad en planta:</label>
-    <input type="number" id="cantidad" placeholder="Cantidad actual">
+    <input type="number" id="cantidad" placeholder="Ej. 45">
 
-    <div class="button-group">
-      <button onclick="enviarInventario()">ENVIAR INVENTARIO</button>
-    </div>
+    <button onclick="enviarInventario()">ENVIAR INVENTARIO</button>
+    <button onclick="exportar()">EXPORTAR A SHEET</button>
+
+    <p id="mensaje"></p>
   </div>
 
   <script>
+    const URL_WEBAPP = "https://script.google.com/macros/s/AKfycbywO-vQOXZfCmD1ykPKDHp-w72Olk-KQtaS5ydGxS74tA_F1zP5ikq7Bx0x_7U1JTy7/exec";
+
     function enviarInventario() {
       const proveedor = document.getElementById("proveedor").value;
-      const fecha = document.getElementById("fecha").value;
       const contenedor = document.getElementById("contenedor").value;
       const cantidad = document.getElementById("cantidad").value;
 
-      if (!proveedor || !fecha || !contenedor || !cantidad) {
-        alert("Por favor llena todos los campos.");
+      if (!proveedor || !contenedor || !cantidad) {
+        document.getElementById("mensaje").innerText = "Por favor completa todos los campos.";
         return;
       }
 
-      const datos = {
-        proveedor,
-        fecha,
-        contenedor,
-        cantidad
-      };
-
-      fetch("https://script.google.com/a/macros/whirlpool.com/s/AKfycbywO-vQOXZfCmD1ykPKDHp-w72Olk-KQtaS5ydGxS74tA_F1zP5ikq7Bx0x_7U1JTy7/exec", {
+      fetch(URL_WEBAPP, {
         method: "POST",
         mode: "no-cors",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(datos)
+        body: JSON.stringify({
+          proveedor,
+          contenedor,
+          cantidad,
+          timestamp: new Date().toISOString()
+        })
       });
 
-      alert("Inventario enviado correctamente.");
-      document.getElementById("fecha").value = "";
+      document.getElementById("mensaje").innerText = "¡Inventario enviado!";
       document.getElementById("contenedor").value = "";
       document.getElementById("cantidad").value = "";
+    }
+
+    function exportar() {
+      window.open("https://docs.google.com/spreadsheets/d/1gzCDL_c778VWVd794Kun6dfCf-AqrIfLAc1mkL55-So/edit", "_blank");
     }
   </script>
 </body>
